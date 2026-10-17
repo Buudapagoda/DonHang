@@ -141,40 +141,43 @@
         let editingOrderId = null; // Lưu ID của đơn hàng đang được sửa
 
         // ================= TẢI & LƯU DỮ LIỆU TỪ MÁY =================
-        function loadLocalData() {
-            const savedProducts = localStorage.getItem('myProductsV2');
-            const savedHistory = localStorage.getItem('myHistoryV2');
+        // ================= TẢI & LƯU DỮ LIỆU TỪ MÁY =================
+function loadLocalData() {
+    // Đổi tên thành V3 để trình duyệt xóa bộ nhớ cũ, nhận danh sách 8 món mới
+    const savedProducts = localStorage.getItem('myProductsV3');
+    const savedHistory = localStorage.getItem('myHistoryV3');
 
-            if (savedProducts) {
-                products = JSON.parse(savedProducts);
-            } else {
-                products = [
-                    { id: 1, name: "Cồn 500ml - 70 độ", price: 21000 },
-                    { id: 2, name: "Cồn 500ml - 90 độ", price: 24000 },
-                    { id: 3, name: "Cồn 1Lit - 70 độ", price: 29000 },
-                    { id: 4, name: "Cồn 1Lit - 90 độ", price: 33000 },
-                    { id: 5, name: "Cồn 5Lit - 70 độ", price: 135000 },
-                    { id: 6, name: "Cồn 5Lit - 90 độ", price: 155000 },
-                    { id: 7, name: "Cồn 30Lit - 70 độ", price: 650000 }.
-                    { id: 8, name: "Cồn 30Lit - 90 độ", price: 810000 }
-                ];
-                saveDataToLocal();
-            }
+    if (savedProducts) {
+        products = JSON.parse(savedProducts);
+    } else {
+        // Danh sách 8 món mặc định của bạn
+        products = [
+            { id: 1, name: "Cồn 500ml - 70 độ", price: 21000 },
+            { id: 2, name: "Cồn 500ml - 90 độ", price: 24000 },
+            { id: 3, name: "Cồn 1Lit - 70 độ", price: 29000 },
+            { id: 4, name: "Cồn 1Lit - 90 độ", price: 33000 },
+            { id: 5, name: "Cồn 5Lit - 70 độ", price: 135000 },
+            { id: 6, name: "Cồn 5Lit - 90 độ", price: 155000 },
+            { id: 7, name: "Cồn 30Lit - 70 độ", price: 650000 },
+            { id: 8, name: "Cồn 30Lit - 90 độ", price: 810000 }
+        ];
+        saveDataToLocal();
+    }
 
-            if (savedHistory) {
-                orderHistory = JSON.parse(savedHistory);
-            }
+    if (savedHistory) {
+        orderHistory = JSON.parse(savedHistory);
+    }
 
-            renderProducts();
-            updateSelectProduct();
-            renderHistory();
-        }
+    renderProducts();
+    updateSelectProduct();
+    renderHistory();
+}
 
-        function saveDataToLocal() {
-            localStorage.setItem('myProductsV2', JSON.stringify(products));
-            localStorage.setItem('myHistoryV2', JSON.stringify(orderHistory));
-        }
-
+function saveDataToLocal() {
+    // Nhớ cập nhật V3 ở hàm lưu này nữa nhé
+    localStorage.setItem('myProductsV3', JSON.stringify(products));
+    localStorage.setItem('myHistoryV3', JSON.stringify(orderHistory));
+}
         window.onload = loadLocalData;
 
         // ================= CHUYỂN TAB =================
