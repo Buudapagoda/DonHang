@@ -7,112 +7,98 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
-<body class="bg-gray-100 text-sm sm:text-base">
+<body class="bg-gray-100 text-sm sm:text-base pb-20">
 
     <!-- THANH MENU TAB BÊN TRÊN -->
-    <div class="bg-white shadow mb-4 sticky top-0 z-10">
-        <div class="max-w-6xl mx-auto flex overflow-x-auto">
-            <button onclick="switchTab('tab-product', 'section-product')" id="tab-product" class="flex-1 py-4 font-bold text-center border-b-4 border-blue-600 text-blue-600 whitespace-nowrap">1. Sản Phẩm</button>
-            <button onclick="switchTab('tab-order', 'section-order')" id="tab-order" class="flex-1 py-4 font-bold text-center border-b-4 border-transparent text-gray-500 whitespace-nowrap">2. Lập Đơn</button>
-            <button onclick="switchTab('tab-history', 'section-history')" id="tab-history" class="flex-1 py-4 font-bold text-center border-b-4 border-transparent text-gray-500 whitespace-nowrap">3. Lịch Sử</button>
+    <div class="bg-white shadow mb-4 sticky top-0 z-20">
+        <div class="max-w-6xl mx-auto flex">
+            <button onclick="switchTab('tab-product', 'section-product')" id="tab-product" class="flex-1 py-3 sm:py-4 font-bold text-center border-b-4 border-blue-600 text-blue-600 text-sm sm:text-base">1. Sản Phẩm</button>
+            <button onclick="switchTab('tab-order', 'section-order')" id="tab-order" class="flex-1 py-3 sm:py-4 font-bold text-center border-b-4 border-transparent text-gray-500 text-sm sm:text-base">2. Lập Đơn</button>
+            <button onclick="switchTab('tab-history', 'section-history')" id="tab-history" class="flex-1 py-3 sm:py-4 font-bold text-center border-b-4 border-transparent text-gray-500 text-sm sm:text-base">3. Lịch Sử</button>
         </div>
     </div>
 
-    <div class="max-w-6xl mx-auto p-2 sm:p-6 mb-10">
+    <div class="max-w-6xl mx-auto p-2 sm:p-6">
         
         <!-- ================= PHẦN 1: QUẢN LÝ SẢN PHẨM ================= -->
-        <div id="section-product" class="bg-white p-4 sm:p-6 rounded-lg shadow block">
-            <h2 class="text-xl sm:text-2xl font-bold mb-4">Thêm / Sửa Sản Phẩm</h2>
-            
-            <div class="flex flex-col sm:flex-row gap-3 mb-4">
-                <div class="w-full">
-                    <input type="text" id="prodName" placeholder="Tên sản phẩm (Vd: Cồn 90 độ)" class="border p-3 rounded w-full focus:outline-none focus:ring-2 focus:ring-blue-400">
+        <div id="section-product" class="block">
+            <div class="bg-white p-4 sm:p-6 rounded-lg shadow mb-4">
+                <h2 class="text-lg sm:text-xl font-bold mb-3">Thêm / Sửa Sản Phẩm</h2>
+                <div class="flex flex-col gap-3">
+                    <input type="text" id="prodName" placeholder="Tên SP (Vd: Cồn 90 độ)" class="border p-3 rounded w-full focus:ring-2 focus:ring-blue-400 outline-none">
+                    <input type="number" id="prodPrice" placeholder="Giá (Vd: 21000)" class="border p-3 rounded w-full focus:ring-2 focus:ring-blue-400 outline-none">
+                    <div class="flex gap-2">
+                        <button id="btnSubmitProduct" onclick="handleProductSubmit()" class="bg-blue-500 text-white font-bold px-4 py-3 rounded w-full active:bg-blue-700 shadow">Thêm SP</button>
+                        <button id="btnCancelEdit" onclick="cancelEdit()" class="bg-gray-400 text-white font-bold px-4 py-3 rounded w-1/3 active:bg-gray-600 shadow hidden">Hủy</button>
+                    </div>
                 </div>
-                <div class="w-full sm:w-1/3">
-                    <input type="number" id="prodPrice" placeholder="Giá (Vd: 21000)" class="border p-3 rounded w-full focus:outline-none focus:ring-2 focus:ring-blue-400">
-                </div>
-                <button id="btnSubmitProduct" onclick="handleProductSubmit()" class="bg-blue-500 text-white font-bold px-4 py-3 rounded w-full sm:w-auto active:bg-blue-700 shadow">Thêm SP</button>
-                <button id="btnCancelEdit" onclick="cancelEdit()" class="bg-gray-400 text-white font-bold px-4 py-3 rounded w-full sm:w-auto active:bg-gray-600 shadow hidden">Hủy Sửa</button>
             </div>
             
-            <div class="overflow-x-auto border rounded">
-                <table class="w-full text-left border-collapse min-w-[450px]">
-                    <thead>
-                        <tr class="bg-gray-200">
-                            <th class="p-3 border">Sản phẩm</th>
-                            <th class="p-3 border">Giá (đ)</th>
-                            <th class="p-3 border text-center w-36">Hành động</th>
-                        </tr>
-                    </thead>
-                    <tbody id="productTableBody">
-                    </tbody>
-                </table>
+            <h3 class="font-bold text-gray-700 mb-2 px-1">Danh sách sản phẩm</h3>
+            <!-- Dùng danh sách Dạng Thẻ (Card) thay cho Bảng -->
+            <div id="productList" class="flex flex-col gap-3">
+                <!-- Javascript sẽ đổ dữ liệu vào đây -->
             </div>
         </div>
 
         <!-- ================= PHẦN 2: LẬP ĐƠN HÀNG ================= -->
-        <div id="section-order" class="bg-white p-4 sm:p-6 rounded-lg shadow hidden">
-            <h2 class="text-xl sm:text-2xl font-bold mb-4">Lập Đơn Hàng Mới</h2>
-            
-            <div class="flex flex-col sm:flex-row gap-3 mb-4 p-3 bg-gray-50 border rounded">
-                <select id="selectProduct" class="border p-3 rounded w-full focus:outline-none focus:ring-2 focus:ring-green-400 bg-white">
-                    <option value="">-- Chọn sản phẩm --</option>
-                </select>
-                <div class="flex gap-2 w-full sm:w-auto">
-                    <input type="number" id="orderQty" placeholder="SL" value="1" min="1" class="border p-3 rounded w-24 text-center focus:outline-none focus:ring-2 focus:ring-green-400">
-                    <button onclick="addToOrder()" class="bg-green-500 text-white font-bold px-4 py-3 rounded w-full whitespace-nowrap active:bg-green-700 shadow">Thêm vào Đơn</button>
-                </div>
-            </div>
-
-            <div id="receipt" class="border-2 border-dashed border-gray-300 p-4 mb-4 bg-yellow-50 rounded relative">
-                <div class="text-center mb-3">
-                    <h3 class="font-bold text-xl uppercase">HÓA ĐƠN BÁN HÀNG</h3>
-                    <p class="text-sm text-gray-500">Ngày: <span id="currentDate" class="font-semibold"></span></p>
+        <div id="section-order" class="hidden">
+            <div class="bg-white p-4 sm:p-6 rounded-lg shadow mb-4">
+                <div class="flex justify-between items-center mb-3">
+                    <h2 id="orderTitle" class="text-lg sm:text-xl font-bold">Lập Đơn Hàng Mới</h2>
+                    <button id="btnCancelEditOrder" onclick="cancelEditOrder()" class="text-sm bg-gray-500 text-white px-3 py-1 rounded hidden">Hủy Sửa Đơn</button>
                 </div>
                 
-                <ul id="orderItems" class="mb-2 border-t border-b border-gray-300 py-3 min-h-[80px] text-sm sm:text-base flex flex-col gap-2">
-                    <li class="text-center text-gray-400 italic" id="emptyOrderText">Đơn hàng đang trống...</li>
-                </ul>
-                <div class="text-right font-bold text-xl text-red-600 mt-2">
-                    Tổng cộng: <span id="orderTotal">0</span> đ
+                <div class="flex flex-col gap-3 p-3 bg-gray-50 border rounded mb-4">
+                    <select id="selectProduct" class="border p-3 rounded w-full focus:ring-2 focus:ring-green-400 bg-white outline-none">
+                        <option value="">-- Chọn sản phẩm --</option>
+                    </select>
+                    <div class="flex gap-2">
+                        <input type="number" id="orderQty" placeholder="SL" value="1" min="1" class="border p-3 rounded w-20 text-center outline-none focus:ring-2 focus:ring-green-400">
+                        <button onclick="addToOrder()" class="bg-green-500 text-white font-bold px-4 py-3 rounded flex-1 active:bg-green-700 shadow">Thêm vào Đơn</button>
+                    </div>
                 </div>
-            </div>
-            
-            <div class="flex flex-col sm:flex-row gap-3">
-                <button onclick="saveOrder()" class="bg-blue-600 text-white font-bold px-4 py-3 rounded w-full active:bg-blue-800 shadow text-lg">Lưu Đơn Hàng</button>
-                <button onclick="exportToImage()" class="bg-purple-500 text-white font-bold px-4 py-3 rounded w-full sm:w-1/3 active:bg-purple-700 shadow">Xuất Ảnh</button>
+
+                <!-- Khung hiển thị Hóa Đơn -->
+                <div id="receipt" class="border-2 border-dashed border-gray-300 p-4 mb-4 bg-yellow-50 rounded relative">
+                    <div class="text-center mb-3">
+                        <h3 class="font-bold text-xl uppercase text-gray-800">HÓA ĐƠN BÁN HÀNG</h3>
+                        <p class="text-xs text-gray-500">Ngày: <span id="currentDate" class="font-semibold"></span></p>
+                    </div>
+                    <ul id="orderItems" class="mb-2 border-t border-b border-gray-300 py-3 min-h-[60px] text-sm sm:text-base flex flex-col gap-2">
+                        <li class="text-center text-gray-400 italic" id="emptyOrderText">Đơn hàng đang trống...</li>
+                    </ul>
+                    <div class="text-right font-bold text-xl text-red-600 mt-2">
+                        Tổng cộng: <span id="orderTotal">0</span> đ
+                    </div>
+                </div>
+                
+                <div class="flex flex-col gap-3">
+                    <button id="btnSaveOrder" onclick="saveOrder()" class="bg-blue-600 text-white font-bold px-4 py-3 rounded w-full active:bg-blue-800 shadow text-lg">Lưu Đơn Hàng</button>
+                    <button onclick="exportToImage()" class="bg-purple-500 text-white font-bold px-4 py-3 rounded w-full active:bg-purple-700 shadow flex justify-center items-center gap-2">
+                        📸 Xuất Ảnh Gửi Khách
+                    </button>
+                </div>
             </div>
         </div>
 
         <!-- ================= PHẦN 3: LỊCH SỬ ĐƠN HÀNG ================= -->
-        <div id="section-history" class="bg-white p-4 sm:p-6 rounded-lg shadow hidden relative">
-             <h2 class="text-xl sm:text-2xl font-bold mb-4">Lịch Sử & Tính Tổng</h2>
-            
-            <div class="bg-blue-50 border border-blue-200 p-4 rounded mb-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
-                <div>
-                    <p class="text-gray-700">Tổng tiền các đơn đang chọn:</p>
-                    <p class="font-bold text-2xl text-red-600"><span id="selectedSumTotal">0</span> đ</p>
-                </div>
-                <button onclick="exportSummaryImage()" class="bg-purple-600 text-white font-bold px-5 py-3 rounded w-full sm:w-auto active:bg-purple-800 shadow">📸 Xuất Ảnh Tổng</button>
+        <div id="section-history" class="hidden relative">
+            <div class="bg-blue-50 border border-blue-200 p-4 rounded-lg shadow mb-4">
+                <p class="text-gray-700 text-sm mb-1">Tổng tiền các đơn đang tích chọn:</p>
+                <p class="font-bold text-2xl text-red-600 mb-3"><span id="selectedSumTotal">0</span> đ</p>
+                <button onclick="exportSummaryImage()" class="bg-purple-600 text-white font-bold px-4 py-3 rounded w-full active:bg-purple-800 shadow flex justify-center items-center gap-2">
+                    📸 Xuất Ảnh Bảng Kê Tổng
+                </button>
             </div>
             
-            <div class="overflow-x-auto border rounded">
-                <table class="w-full text-left border-collapse min-w-[500px]">
-                    <thead>
-                        <tr class="bg-gray-200">
-                            <th class="p-3 border text-center w-12">Chọn</th>
-                            <th class="p-3 border">Mã Đơn</th>
-                            <th class="p-3 border">Ngày</th>
-                            <th class="p-3 border">Tổng Tiền (đ)</th>
-                            <th class="p-3 border text-center w-24">Hành động</th>
-                        </tr>
-                    </thead>
-                    <tbody id="historyTableBody">
-                    </tbody>
-                </table>
+            <h3 class="font-bold text-gray-700 mb-2 px-1">Danh sách đơn đã lưu</h3>
+            <!-- Dùng danh sách Dạng Thẻ (Card) cho Lịch Sử -->
+            <div id="historyList" class="flex flex-col gap-3">
+                <!-- Javascript sẽ đổ dữ liệu vào đây -->
             </div>
 
-            <!-- KHUNG ẨN ĐỂ CHỤP ẢNH TỔNG KẾT -->
+            <!-- 1. KHUNG ẨN ĐỂ CHỤP ẢNH BẢNG KÊ TỔNG -->
             <div id="summaryReceipt" class="absolute top-0 left-[-9999px] border-2 border-solid border-blue-400 p-6 bg-white rounded-lg w-[400px]">
                 <div class="text-center mb-4">
                     <h3 class="font-bold text-2xl text-blue-700 uppercase">BẢNG KÊ DOANH THU</h3>
@@ -122,11 +108,22 @@
                     <span>Mã Đơn</span>
                     <span>Số Tiền</span>
                 </div>
-                <ul id="summaryItems" class="mb-2 text-sm flex flex-col gap-2 min-h-[50px]">
-                    <!-- Chi tiết các đơn sẽ được JavaScript đổ vào đây -->
-                </ul>
+                <ul id="summaryItems" class="mb-2 text-sm flex flex-col gap-2 min-h-[50px]"></ul>
                 <div class="border-t-2 border-gray-300 pt-3 mt-3 text-right font-bold text-2xl text-red-600">
                     Tổng cộng: <span id="summaryTotalAmount">0</span> đ
+                </div>
+            </div>
+
+            <!-- 2. KHUNG ẨN ĐỂ CHỤP ẢNH CHI TIẾT TỪNG ĐƠN TỪ LỊCH SỬ -->
+            <div id="historySingleReceipt" class="absolute top-0 left-[-9999px] border-2 border-dashed border-gray-300 p-6 bg-yellow-50 rounded w-[400px]">
+                <div class="text-center mb-4">
+                    <h3 class="font-bold text-2xl uppercase text-gray-800">HÓA ĐƠN BÁN HÀNG</h3>
+                    <p class="text-sm text-gray-500">Mã đơn: <span id="hsReceiptId" class="font-bold text-blue-600"></span></p>
+                    <p class="text-sm text-gray-500">Ngày lập: <span id="hsReceiptDate" class="font-semibold"></span></p>
+                </div>
+                <ul id="hsReceiptItems" class="mb-3 border-t border-b border-gray-300 py-4 text-base flex flex-col gap-3"></ul>
+                <div class="text-right font-bold text-2xl text-red-600 mt-2">
+                    Tổng cộng: <span id="hsReceiptTotal">0</span> đ
                 </div>
             </div>
         </div>
@@ -138,19 +135,22 @@
         let products = [];
         let currentOrderItems = [];
         let orderHistory = [];
+        
+        // Biến theo dõi trạng thái Sửa
         let editingProductId = null;
+        let editingOrderId = null; // Lưu ID của đơn hàng đang được sửa
 
-        // ================= TẢI VÀ LƯU DỮ LIỆU TỪ MÁY =================
+        // ================= TẢI & LƯU DỮ LIỆU TỪ MÁY =================
         function loadLocalData() {
-            const savedProducts = localStorage.getItem('myProducts');
-            const savedHistory = localStorage.getItem('myHistory');
+            const savedProducts = localStorage.getItem('myProductsV2');
+            const savedHistory = localStorage.getItem('myHistoryV2');
 
             if (savedProducts) {
                 products = JSON.parse(savedProducts);
             } else {
                 products = [
-                    { id: 1, name: "Cồn 500ml - 70", price: 21000 },
-                    { id: 2, name: "Cồn 500ml - 90", price: 24000 }
+                    { id: 1, name: "Cồn 500ml - 70 độ", price: 21000 },
+                    { id: 2, name: "Cồn 500ml - 90 độ", price: 24000 }
                 ];
                 saveDataToLocal();
             }
@@ -165,8 +165,8 @@
         }
 
         function saveDataToLocal() {
-            localStorage.setItem('myProducts', JSON.stringify(products));
-            localStorage.setItem('myHistory', JSON.stringify(orderHistory));
+            localStorage.setItem('myProductsV2', JSON.stringify(products));
+            localStorage.setItem('myHistoryV2', JSON.stringify(orderHistory));
         }
 
         window.onload = loadLocalData;
@@ -187,9 +187,10 @@
             const activeTab = document.getElementById(tabBtnId);
             activeTab.classList.remove('border-transparent', 'text-gray-500');
             activeTab.classList.add('border-blue-600', 'text-blue-600');
+            window.scrollTo(0,0);
         }
 
-        // ================= SẢN PHẨM =================
+        // ================= QUẢN LÝ SẢN PHẨM =================
         function handleProductSubmit() {
             const nameInput = document.getElementById('prodName');
             const priceInput = document.getElementById('prodPrice');
@@ -197,13 +198,11 @@
             const price = priceInput.value.trim();
 
             if (!name) { alert("Vui lòng nhập tên sản phẩm!"); return; }
-            if (!price || isNaN(price) || Number(price) <= 0) { alert("Giá phải là số hợp lệ!"); return; }
+            if (!price || isNaN(price) || Number(price) <= 0) { alert("Giá phải hợp lệ!"); return; }
 
             if (editingProductId) {
                 const index = products.findIndex(p => p.id === editingProductId);
-                if(index !== -1) {
-                    products[index] = { id: editingProductId, name: name, price: Number(price) };
-                }
+                if(index !== -1) products[index] = { id: editingProductId, name: name, price: Number(price) };
                 cancelEdit();
             } else {
                 products.push({ id: Date.now(), name: name, price: Number(price) });
@@ -220,19 +219,18 @@
             document.getElementById('prodName').value = p.name;
             document.getElementById('prodPrice').value = p.price;
             editingProductId = p.id;
-
-            const btnSubmit = document.getElementById('btnSubmitProduct');
-            btnSubmit.innerText = "Cập nhật SP";
-            btnSubmit.classList.replace('bg-blue-500', 'bg-orange-500');
             
+            const btnSubmit = document.getElementById('btnSubmitProduct');
+            btnSubmit.innerText = "Lưu Sửa";
+            btnSubmit.classList.replace('bg-blue-500', 'bg-orange-500');
             document.getElementById('btnCancelEdit').classList.remove('hidden');
+            window.scrollTo(0,0);
         }
 
         function cancelEdit() {
             editingProductId = null;
             document.getElementById('prodName').value = '';
             document.getElementById('prodPrice').value = '';
-            
             const btnSubmit = document.getElementById('btnSubmitProduct');
             btnSubmit.innerText = "Thêm SP";
             btnSubmit.classList.replace('bg-orange-500', 'bg-blue-500');
@@ -240,30 +238,33 @@
         }
 
         function deleteProduct(index) {
-            if(!confirm("Bạn có chắc chắn muốn xóa sản phẩm này?")) return;
+            if(!confirm("Xóa sản phẩm này?")) return;
             products.splice(index, 1);
             saveDataToLocal();
             renderProducts();
             updateSelectProduct();
         }
 
+        // Render Dạng Thẻ (Card) cho Sản phẩm
         function renderProducts() {
-            const tbody = document.getElementById('productTableBody');
-            tbody.innerHTML = '';
+            const list = document.getElementById('productList');
+            list.innerHTML = '';
             if(products.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="3" class="text-center p-4 text-gray-500">Chưa có sản phẩm.</td></tr>`;
+                list.innerHTML = `<div class="p-4 text-center text-gray-500 bg-white rounded border">Chưa có sản phẩm.</div>`;
                 return;
             }
             products.forEach((p, index) => {
-                tbody.innerHTML += `
-                    <tr class="border-b hover:bg-gray-50">
-                        <td class="p-3 border-r font-medium">${p.name}</td>
-                        <td class="p-3 border-r font-semibold text-blue-600">${p.price.toLocaleString('vi-VN')}</td>
-                        <td class="p-3 text-center flex justify-center gap-2">
-                            <button onclick="prepareEditProduct(${index})" class="text-orange-600 font-bold px-3 py-1 bg-orange-100 rounded">Sửa</button>
-                            <button onclick="deleteProduct(${index})" class="text-red-500 font-bold px-3 py-1 bg-red-100 rounded">Xóa</button>
-                        </td>
-                    </tr>
+                list.innerHTML += `
+                    <div class="flex justify-between items-center bg-white p-3 rounded-lg shadow-sm border border-gray-200">
+                        <div>
+                            <div class="font-bold text-gray-800">${p.name}</div>
+                            <div class="text-blue-600 font-semibold">${p.price.toLocaleString('vi-VN')} đ</div>
+                        </div>
+                        <div class="flex gap-2">
+                            <button onclick="prepareEditProduct(${index})" class="text-orange-600 font-bold px-3 py-2 bg-orange-50 rounded active:bg-orange-200">Sửa</button>
+                            <button onclick="deleteProduct(${index})" class="text-red-500 font-bold px-3 py-2 bg-red-50 rounded active:bg-red-200">Xóa</button>
+                        </div>
+                    </div>
                 `;
             });
         }
@@ -276,7 +277,7 @@
             });
         }
 
-        // ================= LẬP ĐƠN HÀNG =================
+        // ================= LẬP / SỬA ĐƠN HÀNG =================
         function addToOrder() {
             const select = document.getElementById('selectProduct');
             const qtyInput = document.getElementById('orderQty');
@@ -284,7 +285,7 @@
             const qty = parseInt(qtyInput.value);
 
             if (selectedIndex === "") { alert("Vui lòng chọn sản phẩm!"); return; }
-            if (isNaN(qty) || qty <= 0) { alert("Số lượng phải lớn hơn 0!"); return; }
+            if (isNaN(qty) || qty <= 0) { alert("Số lượng phải > 0!"); return; }
 
             const p = products[selectedIndex];
             currentOrderItems.push({ name: p.name, price: p.price, qty: qty, total: p.price * qty });
@@ -297,7 +298,7 @@
             let totalOrderValue = 0;
 
             if (currentOrderItems.length === 0) {
-                ul.innerHTML = `<li class="text-center text-gray-400 italic" id="emptyOrderText">Đơn hàng đang trống...</li>`;
+                ul.innerHTML = `<li class="text-center text-gray-400 italic">Đơn hàng đang trống...</li>`;
                 document.getElementById('orderTotal').innerText = "0";
                 return;
             }
@@ -305,14 +306,14 @@
             currentOrderItems.forEach((item, index) => {
                 totalOrderValue += item.total;
                 ul.innerHTML += `
-                    <li class="flex justify-between items-center bg-white p-2 rounded border border-gray-200">
+                    <li class="flex justify-between items-center bg-white p-2 rounded border border-gray-100 shadow-sm">
                         <div>
                             <p class="font-bold text-gray-800">${item.name}</p>
                             <p class="text-xs text-gray-500">${item.price.toLocaleString('vi-VN')} đ x ${item.qty}</p>
                         </div>
                         <div class="flex items-center gap-3">
                             <span class="font-bold text-blue-600">${item.total.toLocaleString('vi-VN')} đ</span>
-                            <button onclick="removeOrderItem(${index})" class="text-red-500 font-bold bg-red-100 px-2 py-1 rounded delete-btn-receipt">X</button>
+                            <button onclick="removeOrderItem(${index})" class="text-red-500 font-bold bg-red-100 px-3 py-1 rounded delete-btn-receipt">X</button>
                         </div>
                     </li>
                 `;
@@ -328,59 +329,78 @@
         function saveOrder() {
             if (currentOrderItems.length === 0) { alert("Đơn hàng đang trống!"); return; }
 
-            const orderId = "DH" + Math.floor(10000 + Math.random() * 90000);
-            const date = new Date().toLocaleDateString('vi-VN') + " " + new Date().toLocaleTimeString('vi-VN', {hour: '2-digit', minute:'2-digit'});
             const totalValue = parseInt(document.getElementById('orderTotal').innerText.replace(/\./g, ''));
             const detailsStr = currentOrderItems.map(item => `${item.name} (x${item.qty})`).join(', ');
 
-            const orderData = { id: orderId, date: date, details: detailsStr, total: totalValue };
+            if (editingOrderId) {
+                // CHẾ ĐỘ CẬP NHẬT ĐƠN CŨ
+                const index = orderHistory.findIndex(o => o.id === editingOrderId);
+                if(index !== -1) {
+                    orderHistory[index].details = detailsStr;
+                    orderHistory[index].total = totalValue;
+                    orderHistory[index].items = [...currentOrderItems]; // Lưu chi tiết mảng để sau này còn sửa được
+                }
+                alert(`Đã CẬP NHẬT thành công đơn: ${editingOrderId}`);
+            } else {
+                // CHẾ ĐỘ TẠO ĐƠN MỚI
+                const orderId = "DH" + Math.floor(10000 + Math.random() * 90000);
+                const date = new Date().toLocaleDateString('vi-VN') + " " + new Date().toLocaleTimeString('vi-VN', {hour: '2-digit', minute:'2-digit'});
+                
+                const orderData = { 
+                    id: orderId, 
+                    date: date, 
+                    details: detailsStr, 
+                    total: totalValue,
+                    items: [...currentOrderItems] // Lưu toàn bộ mảng món hàng
+                };
+                orderHistory.push(orderData);
+                alert(`Đã TẠO thành công đơn: ${orderId}`);
+            }
             
-            orderHistory.push(orderData);
             saveDataToLocal(); 
-
-            alert(`Đã lưu thành công đơn hàng: ${orderId}`);
-            currentOrderItems = [];
-            renderReceipt();
+            cancelEditOrder(); // Dọn dẹp form
             renderHistory();
+            switchTab('tab-history', 'section-history'); // Chuyển về tab lịch sử xem kết quả
         }
 
-        // ================= LỊCH SỬ =================
+        // ================= LỊCH SỬ ĐƠN HÀNG =================
+        // Render Dạng Thẻ (Card) cho Lịch Sử
         function renderHistory() {
-            const tbody = document.getElementById('historyTableBody');
-            tbody.innerHTML = '';
+            const list = document.getElementById('historyList');
+            list.innerHTML = '';
             if(orderHistory.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" class="text-center p-4 text-gray-500">Chưa có đơn hàng nào được lưu.</td></tr>`;
+                list.innerHTML = `<div class="p-4 text-center text-gray-500 bg-white rounded border">Chưa có đơn hàng nào.</div>`;
                 return;
             }
 
             [...orderHistory].reverse().forEach((order, index) => {
-                const realIndex = orderHistory.length - 1 - index; // Lưu vị trí thực để xuất ảnh chính xác
-                tbody.innerHTML += `
-                    <tr class="border-b hover:bg-gray-50">
-                        <td class="p-3 border-r text-center">
-                            <input type="checkbox" class="w-5 h-5 order-checkbox cursor-pointer" value="${order.total}" data-real-index="${realIndex}" onchange="calculateSelectedTotal()">
-                        </td>
-                        <td class="p-3 border-r font-bold text-blue-600">
-                            ${order.id}
-                            <div class="text-xs text-gray-400 font-normal mt-1">${order.details}</div>
-                        </td>
-                        <td class="p-3 border-r text-sm">${order.date}</td>
-                        <td class="p-3 font-bold border-r text-red-600">${order.total.toLocaleString('vi-VN')}</td>
-                        <td class="p-3 text-center">
-                            <button onclick="deleteHistoryOrder(${realIndex})" class="text-red-500 font-bold px-3 py-1 bg-red-100 rounded">Xóa</button>
-                        </td>
-                    </tr>
+                const realIndex = orderHistory.length - 1 - index;
+                list.innerHTML += `
+                    <div class="bg-white p-3 rounded-lg shadow-sm border border-gray-200">
+                        <div class="flex justify-between items-start mb-2 border-b border-gray-100 pb-2">
+                            <div class="flex items-center gap-3">
+                                <input type="checkbox" class="w-6 h-6 order-checkbox cursor-pointer accent-blue-500" value="${order.total}" data-real-index="${realIndex}" onchange="calculateSelectedTotal()">
+                                <div>
+                                    <span class="font-bold text-blue-700 text-lg">${order.id}</span>
+                                    <div class="text-xs text-gray-500">${order.date}</div>
+                                </div>
+                            </div>
+                            <div class="font-bold text-red-600 text-lg">${order.total.toLocaleString('vi-VN')} đ</div>
+                        </div>
+                        
+                        <div class="text-sm text-gray-600 mb-3 px-1">
+                            ${order.details}
+                        </div>
+                        
+                        <div class="flex justify-between gap-2 pt-1">
+                            <button onclick="exportSingleHistoryOrder(${realIndex})" class="flex-1 bg-purple-100 text-purple-700 font-bold py-2 rounded border border-purple-200 active:bg-purple-200 text-sm">📸 Hóa Đơn</button>
+                            <button onclick="prepareEditOrder(${realIndex})" class="flex-1 bg-orange-100 text-orange-700 font-bold py-2 rounded border border-orange-200 active:bg-orange-200 text-sm">Sửa</button>
+                            <button onclick="deleteHistoryOrder(${realIndex})" class="flex-1 bg-red-100 text-red-700 font-bold py-2 rounded border border-red-200 active:bg-red-200 text-sm">Xóa</button>
+                        </div>
+                    </div>
                 `;
             });
             calculateSelectedTotal(); 
-        }
-
-        function deleteHistoryOrder(index) {
-            if(confirm("Bạn có chắc muốn xóa đơn hàng này khỏi lịch sử?")) {
-                orderHistory.splice(index, 1);
-                saveDataToLocal(); 
-                renderHistory();
-            }
         }
 
         function calculateSelectedTotal() {
@@ -390,30 +410,124 @@
             document.getElementById('selectedSumTotal').innerText = sum.toLocaleString('vi-VN');
         }
 
-        // ================= XUẤT ẢNH =================
-        
-        // Xuất ảnh cho Đơn Hàng Lẻ
-        function exportToImage() {
-            if (currentOrderItems.length === 0) return alert("Không có sản phẩm để xuất hóa đơn!");
-            const deleteBtns = document.querySelectorAll('.delete-btn-receipt');
-            deleteBtns.forEach(btn => btn.style.display = 'none');
+        function deleteHistoryOrder(index) {
+            if(confirm("Xóa vĩnh viễn đơn hàng này?")) {
+                orderHistory.splice(index, 1);
+                saveDataToLocal(); 
+                renderHistory();
+            }
+        }
 
-            html2canvas(document.getElementById('receipt'), { scale: 2 }).then(canvas => {
-                const link = document.createElement('a');
-                link.download = `HoaDon_${new Date().getTime()}.png`;
-                link.href = canvas.toDataURL("image/png");
-                link.click();
-                deleteBtns.forEach(btn => btn.style.display = 'block');
+        // --- TÍNH NĂNG MỚI: ĐƯA ĐƠN VỀ CHẾ ĐỘ SỬA ---
+        function prepareEditOrder(index) {
+            const order = orderHistory[index];
+            if(!order.items || order.items.length === 0) {
+                alert("Đơn hàng này được tạo từ phiên bản cũ, không hỗ trợ sửa chi tiết. Vui lòng tạo đơn mới!");
+                return;
+            }
+
+            // Đưa dữ liệu vào form Lập đơn
+            currentOrderItems = [...order.items];
+            editingOrderId = order.id;
+            
+            // Đổi giao diện
+            document.getElementById('orderTitle').innerText = "Đang sửa đơn: " + order.id;
+            document.getElementById('btnSaveOrder').innerText = "Cập Nhật Đơn Hàng";
+            document.getElementById('btnSaveOrder').classList.replace('bg-blue-600', 'bg-orange-600');
+            document.getElementById('btnCancelEditOrder').classList.remove('hidden');
+
+            renderReceipt();
+            switchTab('tab-order', 'section-order'); // Chuyển qua tab 2
+        }
+
+        function cancelEditOrder() {
+            editingOrderId = null;
+            currentOrderItems = [];
+            
+            document.getElementById('orderTitle').innerText = "Lập Đơn Hàng Mới";
+            document.getElementById('btnSaveOrder').innerText = "Lưu Đơn Hàng";
+            document.getElementById('btnSaveOrder').classList.replace('bg-orange-600', 'bg-blue-600');
+            document.getElementById('btnCancelEditOrder').classList.add('hidden');
+            
+            renderReceipt();
+        }
+
+        // ================= XUẤT ẢNH & CHIA SẺ THÔNG MINH =================
+        async function processAndShareImage(htmlElement, fileName) {
+            try {
+                const canvas = await html2canvas(htmlElement, { scale: 2 });
+                canvas.toBlob(async function(blob) {
+                    const file = new File([blob], fileName, { type: 'image/png' });
+                    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                        try {
+                            await navigator.share({ files: [file], title: 'Hóa Đơn', text: 'Gửi bạn ảnh hóa đơn:' });
+                        } catch (e) {} // Bỏ qua nếu user tắt bảng share
+                    } else {
+                        const link = document.createElement('a');
+                        link.download = fileName;
+                        link.href = canvas.toDataURL("image/png");
+                        link.click();
+                    }
+                }, 'image/png');
+            } catch (err) { alert("Lỗi tạo ảnh: " + err); }
+        }
+
+        // 1. Xuất ảnh lúc đang Lập đơn
+        function exportToImage() {
+            if (currentOrderItems.length === 0) return alert("Hóa đơn trống!");
+            const deleteBtns = document.querySelectorAll('.delete-btn-receipt');
+            deleteBtns.forEach(btn => btn.style.display = 'none'); 
+
+            processAndShareImage(document.getElementById('receipt'), `HoaDon_${new Date().getTime()}.png`).then(() => {
+                deleteBtns.forEach(btn => btn.style.display = 'block'); 
             });
         }
 
-        // Xuất ảnh cho Bảng Tổng Các Đơn Hàng Được Chọn
+        // 2. TÍNH NĂNG MỚI: Xuất ảnh 1 đơn hàng cụ thể từ Lịch Sử
+        function exportSingleHistoryOrder(index) {
+            const order = orderHistory[index];
+            if(!order.items) {
+                alert("Đơn hàng cũ không hỗ trợ xuất ảnh chi tiết!"); return;
+            }
+
+            // Điền dữ liệu vào khung hóa đơn ẩn
+            document.getElementById('hsReceiptId').innerText = order.id;
+            document.getElementById('hsReceiptDate').innerText = order.date;
+            
+            const ul = document.getElementById('hsReceiptItems');
+            ul.innerHTML = '';
+            order.items.forEach(item => {
+                ul.innerHTML += `
+                    <li class="flex justify-between items-center py-1">
+                        <div>
+                            <p class="font-bold text-gray-800">${item.name}</p>
+                            <p class="text-sm text-gray-500">${item.price.toLocaleString('vi-VN')} đ x ${item.qty}</p>
+                        </div>
+                        <span class="font-bold text-blue-600">${item.total.toLocaleString('vi-VN')} đ</span>
+                    </li>
+                `;
+            });
+            document.getElementById('hsReceiptTotal').innerText = order.total.toLocaleString('vi-VN');
+
+            // Lôi khung ẩn ra để chụp
+            const receiptDiv = document.getElementById('historySingleReceipt');
+            receiptDiv.style.left = '0';
+            receiptDiv.style.position = 'relative';
+
+            setTimeout(() => {
+                processAndShareImage(receiptDiv, `${order.id}.png`).then(() => {
+                    receiptDiv.style.position = 'absolute';
+                    receiptDiv.style.left = '-9999px';
+                });
+            }, 150);
+        }
+
+        // 3. Xuất Bảng Kê Tổng
         function exportSummaryImage() {
             const checkboxes = document.querySelectorAll('.order-checkbox');
             let selectedOrders = [];
             let sum = 0;
 
-            // Nhặt các đơn được tick
             checkboxes.forEach(cb => {
                 if (cb.checked) {
                     const realIndex = cb.getAttribute('data-real-index');
@@ -422,15 +536,9 @@
                 }
             });
 
-            if (selectedOrders.length === 0) {
-                alert("Vui lòng tích chọn ít nhất 1 đơn hàng để xuất ảnh tổng kết!");
-                return;
-            }
+            if (selectedOrders.length === 0) return alert("Vui lòng tích chọn đơn hàng để xuất!");
 
-            // Ghi ngày giờ xuất
             document.getElementById('summaryDate').innerText = new Date().toLocaleDateString('vi-VN') + " " + new Date().toLocaleTimeString('vi-VN', {hour: '2-digit', minute:'2-digit'});
-            
-            // Đổ dữ liệu vào khung Bảng Kê
             const ul = document.getElementById('summaryItems');
             ul.innerHTML = '';
             selectedOrders.forEach(order => {
@@ -446,23 +554,16 @@
             });
             document.getElementById('summaryTotalAmount').innerText = sum.toLocaleString('vi-VN');
 
-            // Lấy khung chứa bảng kê, hiển thị nó ra (bằng cách đổi position) và chụp
             const summaryReceipt = document.getElementById('summaryReceipt');
-            summaryReceipt.style.left = '0'; // Kéo nó vào khung hình để chụp
+            summaryReceipt.style.left = '0';
             summaryReceipt.style.position = 'relative';
 
             setTimeout(() => {
-                html2canvas(summaryReceipt, { scale: 2 }).then(canvas => {
-                    const link = document.createElement('a');
-                    link.download = `BangKeTong_${new Date().getTime()}.png`;
-                    link.href = canvas.toDataURL("image/png");
-                    link.click();
-                    
-                    // Chụp xong thì giấu nó đi lại
+                processAndShareImage(summaryReceipt, `BangKeTong_${new Date().getTime()}.png`).then(() => {
                     summaryReceipt.style.position = 'absolute';
                     summaryReceipt.style.left = '-9999px';
                 });
-            }, 100);
+            }, 150);
         }
     </script>
 </body>
